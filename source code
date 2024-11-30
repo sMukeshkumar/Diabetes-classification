@@ -1,0 +1,76 @@
+#scikit learn used for ML modeling
+#train_test_split this using in spliting method i using in short form tts
+from sklearn.model_selection import train_test_split as tts
+
+#i stored a datasets in df
+
+
+import pandas as pd
+df = pd.read_csv(r"M:\my files\diabetes.csv")
+print(df.columns)
+
+
+#correlation between diffrent columns
+print(df.corr())
+
+
+#drop Outcome only
+x = df.drop('Outcome', axis = 1)
+
+
+#seleting outcome columns only
+y = df['Outcome']
+
+
+#i get information about dataset
+print(df.info())
+print(x.columns)
+
+
+
+#Splitting
+#x means features and y means targets
+#always train dataset size > test dataset size
+#i get train dataset size of 80 persentage
+x_train , x_test , y_train , y_test = tts(x , y , train_size= 0.8)
+
+
+#shape is get the value of row and columuns number of count
+print(x_train.shape)
+print(x_test.shape)
+
+
+# use RandomForestClassifier algoritham
+from sklearn.ensemble import RandomForestClassifier
+
+
+#i stored RandomForestClassifier in r variable  
+r = RandomForestClassifier()
+
+
+#training the model or algoritham by giving training  dataset
+r.fit(x_train , y_train)
+
+
+#preding the outcome by giving samll dataset(x_test)
+pred = r.predict(x_test)
+
+
+
+#(sklearn(metrics(accuracy)))
+from sklearn.metrics import accuracy_score 
+
+
+#acc is stored a accuracy score of prediction
+acc = accuracy_score(pred, y_test)
+print(acc)
+
+
+#pickle is using to the structure and destructure 
+#tranfer to one program to another program
+#main pickle in use for create a web page
+import pickle
+
+#code will stored in (diabetes.pk1)
+with open("diabetes.pkl" , "wb") as file:
+    pickle.dump(r ,file)  
