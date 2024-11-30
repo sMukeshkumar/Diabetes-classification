@@ -1,0 +1,59 @@
+import time
+import pandas as pd
+import streamlit as st
+import pickle
+
+# Load the dataset (though it's not used in this code, it's being printed out)
+df = pd.read_csv("M:\\my files\\diabetes.csv")
+print(df)
+
+# Streamlit page title
+st.title("DIABETES CLASSIFICATION")
+
+# Show loading spinner
+with st.spinner("KOJAM WAIT PANNUGA"):
+    time.sleep(3)
+
+# Getting user inputs
+name = st.text_input("Enter your Name:")
+pregnancies = st.number_input("Enter the number of Pregnancies:", min_value=0)
+glucose = st.number_input("Enter the Glucose:", min_value=70, max_value=200)
+blood_pressure = st.number_input("Enter the Blood Pressure:", min_value=70, max_value=120)
+skin_thickness = st.number_input("Enter the Skin Thickness:", min_value=0, max_value=100)
+insulin = st.number_input("Enter the Insulin:", min_value=0, max_value=1000)
+bmi = st.number_input("Enter the BMI:", min_value=10.0, max_value=60.0)
+diabetes_pedigree = st.number_input("Enter the Diabetes Pedigree Function:", min_value=0.0, max_value=2.5)
+age = st.number_input("Enter the Age:", min_value=0, max_value=120)
+
+# Add the submit button
+submit_button = st.button("Submit")
+
+# Load the trained model from the pickle file
+with open("diabetes.pkl", "rb") as file:
+    model = pickle.load(file)
+
+if submit_button:
+    try:
+        # Prepare the input values as a DataFrame
+        inputs = [float(pregnancies), float(glucose), float(blood_pressure), float(skin_thickness),
+                  float(insulin), float(bmi), float(diabetes_pedigree), float(age)]
+
+        # Create a DataFrame with input values
+        input_data = pd.DataFrame([inputs], columns=['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness',
+                                                     'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age'])
+
+        # Make the prediction
+        prediction = model.predict(input_data)
+
+        # Output based on the model prediction
+        if prediction[0] == 0:
+            st.write(f"NAME: {name}")
+            st.write(f"AGE: {age}")
+            st.write("YOU ARE SO LUCKY, YOU HAVE NO DIABETES!")
+        else:
+            st.write(f"NAME: {name}")
+            st.write(f"AGE: {age}")
+            st.write("SORRY, YOU HAVE DIABETES.")
+
+    except ValueError:
+        st.write("Please enter valid numeric values for all fields.")
